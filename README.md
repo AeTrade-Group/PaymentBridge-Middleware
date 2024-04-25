@@ -1,10 +1,10 @@
-![alt tag](readme/flow.png)
-
------
 # PaymentBridge
 
 ## Description
 PaymentBridge is a middleware application designed to facilitate seamless payment processing between the Sokokuu marketplace and various payment gateways. It supports multiple payment methods, including MTN Mobile Money and Visa, providing a secure and efficient way to handle transactions.
+
+![PaymentBridge Architecture](readme/flow.png)
+*Figure 1: Architectural diagram showing how PaymentBridge interacts with the Sokokuu marketplace and AeTrust payment gateway. The diagram illustrates the flow of data for initiating payments and processing responses, ensuring a seamless transaction experience for users.*
 
 ## Table of Contents
 - [Installation](#installation)
