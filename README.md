@@ -1,3 +1,6 @@
+![alt tag](readme/flow.png)
+
+-----
 # PaymentBridge
 
 ## Description
