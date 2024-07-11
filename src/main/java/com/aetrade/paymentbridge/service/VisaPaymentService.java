@@ -72,4 +72,5 @@ public Map<String, Object> transformToRENFormat(PaymentRequest paymentRequest) {
     renRequest.put("Document", document);
 
     return renRequest;
+    }
 }
