@@ -48,29 +48,41 @@ public Map<String, Object> transformToRENFormat(PaymentRequest paymentRequest) {
     hdr.put("MsgFctn", "AUTQ");
     hdr.put("PrtcolVrsn", "2.0");
     hdr.put("CreDtTm", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+    hdr.put("Chnl", "WEB");
 
     // Environment
-    acqrr.put("Id", "configured_acquirer_id");
+    acqrr.put("Id", Map.of("Id", "500008"));
     pstlAdr.put("TwnNm", paymentRequest.getBillingAddress().get("city"));
+    pstlAdr.put("CtrySubDvsn", "MZ");
     pstlAdr.put("CtryCd", paymentRequest.getBillingAddress().get("country"));
     pstlAdr.put("PstCd", paymentRequest.getBillingAddress().get("zip"));
     lctnAndCtct.put("PstlAdr", pstlAdr);
-    mrchnt.put("Id", "configured_merchant_id");
+    mrchnt.put("Id", "000000081111111");
     mrchnt.put("LctnAndCtct", lctnAndCtct);
+    mrchnt.put("CmonNm", "SIM Av. 24 de Julho 155");
     envt.put("Acqrr", acqrr);
     envt.put("Mrchnt", mrchnt);
+    envt.put("POI", Map.of("Id", "SbmtTrn"));
+    envt.put("Wllt", Map.of("Id", "081234", "Prvdr", "OPR1  "));
+
+    // Context
+    Map<String, Object> cntxt = new HashMap<>();
+    cntxt.put("PmtCntxt", Map.of("AttndncCntxt", "UATT"));
 
     // Transaction Details
     txDtls.put("TtlAmt", paymentRequest.getAmount());
     txDtls.put("Ccy", paymentRequest.getCurrency());
     tx.put("TxDtls", txDtls);
     tx.put("TxTp", "CRDP");
+    tx.put("MrchntCtgyCd", "6012");
     txId.put("TxDtTm", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
     txId.put("TxRef", paymentRequest.getOrderId());
     tx.put("TxId", txId);
+    tx.put("AcctFr", Map.of("SelctdAcctTp", "WLLT"));
 
     // Assemble the request
     authstnReq.put("Envt", envt);
+    authstnReq.put("Cntxt", cntxt);
     authstnReq.put("Tx", tx);
     accptrAuthstnReq.put("Hdr", hdr);
     accptrAuthstnReq.put("AuthstnReq", authstnReq);
