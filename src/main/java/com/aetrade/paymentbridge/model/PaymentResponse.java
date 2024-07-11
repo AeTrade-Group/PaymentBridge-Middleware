@@ -25,5 +25,7 @@ public class PaymentResponse {
     private String responseCode; // Specific response code from the payment gateway
     private String responseMessage; // Descriptive message corresponding to the response code
     private LocalDateTime transactionDate; // The date and time when the transaction was processed
+    private BigDecimal balanceAmount; // The balance amount after the transaction
+    private String balanceCurrency; // The currency of the balance amount
 
 }
