@@ -1,17 +1,19 @@
 package com.aetrade.paymentbridge.controller;
 
-import com.aetrade.paymentbridge.model.PaymentRequest;
-import com.aetrade.paymentbridge.model.PaymentResponse;
-import com.aetrade.paymentbridge.service.PaymentGatewayFactory;
-import com.aetrade.paymentbridge.service.GatewayService;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.aetrade.paymentbridge.model.PaymentRequest;
+import com.aetrade.paymentbridge.model.PaymentResponse;
+import com.aetrade.paymentbridge.service.GatewayService;
+import com.aetrade.paymentbridge.service.PaymentGatewayFactory;
 
 @RestController
 @RequestMapping("/api/payments")
