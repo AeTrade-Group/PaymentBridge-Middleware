@@ -89,7 +89,7 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        Map<String, Object> renRequest = transformToRENFormat(paymentRequest);
+        Map<String, Object> renRequest = gatewayService.transformToRENFormat(paymentRequest);
         PaymentResponse response = gatewayService.processPayment(renRequest);
         return ResponseEntity.ok(response);
     }
