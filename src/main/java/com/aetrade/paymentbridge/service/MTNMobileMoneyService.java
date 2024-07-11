@@ -17,9 +17,28 @@ public class MTNMobileMoneyService implements GatewayService {
     public PaymentResponse processPayment(Map<String, Object> renRequest) {
         // Implementation specific to MTN Mobile Money
         PaymentResponse response = new PaymentResponse();
-        response.setStatus("APPROVED");
-        response.setResponseCode("200");
-        response.setResponseMessage("MTN Mobile Money transaction successful");
+        // Extract necessary fields from the REN response
+        Map<String, Object> document = (Map<String, Object>) renRequest.get("Document");
+        Map<String, Object> accptrAuthstnRspn = (Map<String, Object>) document.get("AccptrAuthstnRspn");
+        Map<String, Object> hdr = (Map<String, Object>) accptrAuthstnRspn.get("Hdr");
+        Map<String, Object> authstnRspn = (Map<String, Object>) accptrAuthstnRspn.get("AuthstnRspn");
+        Map<String, Object> txRspn = (Map<String, Object>) authstnRspn.get("TxRspn");
+        Map<String, Object> authstnRslt = (Map<String, Object>) txRspn.get("AuthstnRslt");
+        Map<String, Object> rspnToAuthstn = (Map<String, Object>) authstnRslt.get("RspnToAuthstn");
+
+        String responseCode = (String) rspnToAuthstn.get("Rspn");
+        String responseMessage = (String) rspnToAuthstn.get("RspnRsn");
+
+        if ("APPR".equals(responseCode)) {
+            response.setStatus("APPROVED");
+            response.setResponseCode("200");
+            response.setResponseMessage("MTN Mobile Money transaction successful");
+        } else {
+            response.setStatus("DECLINED");
+            response.setResponseCode("400");
+            response.setResponseMessage(responseMessage != null ? responseMessage : "MTN Mobile Money transaction failed");
+        }
+
         return response;
     }
 

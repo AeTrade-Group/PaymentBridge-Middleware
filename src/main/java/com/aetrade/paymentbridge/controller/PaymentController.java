@@ -44,7 +44,11 @@ public class PaymentController {
 
         Map<String, Object> renRequest = gatewayService.transformToRENFormat(paymentRequest);
         PaymentResponse response = gatewayService.processPayment(renRequest);
-        return ResponseEntity.ok(response);
+        if ("APPROVED".equals(response.getStatus())) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 
     /**
