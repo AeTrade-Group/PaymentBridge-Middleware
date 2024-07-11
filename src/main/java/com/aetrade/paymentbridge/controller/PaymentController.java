@@ -20,7 +20,7 @@ public class PaymentController {
      * determines the appropriate gateway service based on the payment method,
      * and processes the payment.
      *
-     * @param paymentRequest The payment request details from the client.
+     * @param paymentRequest The payment request details from CS-Cart.
      * @return ResponseEntity containing the PaymentResponse, including status and message.
      */
     @PostMapping("/initiate")

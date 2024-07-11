@@ -1,6 +1,7 @@
 package com.aetrade.paymentbridge.model;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Pattern;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * This class represents a payment initiation request from the marketplace.
@@ -38,4 +40,12 @@ public class PaymentRequest {
     @Size(min = 1, max = 50, message = "Customer ID must be between 1 and 50 characters")
     private String customerId;
 
+    @NotBlank(message = "Order ID is required")
+    private String orderId;
+
+    @NotBlank(message = "User ID is required")
+    private String userId;
+
+    private Map<String, String> customerDetails;
+    private Map<String, String> billingAddress;
 }
