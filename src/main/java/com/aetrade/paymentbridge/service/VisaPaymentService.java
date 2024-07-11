@@ -1,13 +1,14 @@
 package com.aetrade.paymentbridge.service;                                                                                                                                                                 
                                                                                                                                                                                                             
- import com.aetrade.paymentbridge.model.PaymentRequest;                                                                                                                                                     
- import com.aetrade.paymentbridge.model.PaymentResponse;                                                                                                                                                    
- import org.springframework.stereotype.Service;                                                                                                                                                             
-                                                                                                                                                                                                            
- import java.time.LocalDateTime;                                                                                                                                                                            
- import java.time.format.DateTimeFormatter;                                                                                                                                                                 
- import java.util.HashMap;                                                                                                                                                                                  
- import java.util.Map;                                                                                                                                                                                      
+ import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.aetrade.paymentbridge.model.PaymentRequest;
+import com.aetrade.paymentbridge.model.PaymentResponse;                                                                                                                                                                                      
                                                                                                                                                                                                             
  @Service                                                                                                                                                                                                   
  public class VisaPaymentService implements GatewayService {                                                                                                                                                
