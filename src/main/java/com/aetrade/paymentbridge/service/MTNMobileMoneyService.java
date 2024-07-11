@@ -14,7 +14,7 @@ import com.aetrade.paymentbridge.model.PaymentResponse;
 public class MTNMobileMoneyService implements GatewayService {
 
     @Override
-    public PaymentResponse processPayment(PaymentRequest request) {
+    public PaymentResponse processPayment(Map<String, Object> renRequest) {
         // Implementation specific to MTN Mobile Money
         PaymentResponse response = new PaymentResponse();
         response.setStatus("APPROVED");
