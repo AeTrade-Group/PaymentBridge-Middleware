@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aetrade.paymentbridge.model.PaymentRequest;
 import com.aetrade.paymentbridge.model.PaymentResponse;
+import com.aetrade.paymentbridge.model.Transaction;
+import com.aetrade.paymentbridge.repository.TransactionRepository;
 import com.aetrade.paymentbridge.service.GatewayService;
 import com.aetrade.paymentbridge.service.PaymentGatewayFactory;
 
@@ -23,7 +25,10 @@ public class PaymentController {
     private PaymentGatewayFactory paymentGatewayFactory;
 
 
-    /**
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    /** 
      * Endpoint to initiate a payment. This method receives a payment request,
      * determines the appropriate gateway service based on the payment method,
      * and processes the payment.
@@ -44,6 +49,17 @@ public class PaymentController {
 
         Map<String, Object> renRequest = gatewayService.transformToRENFormat(paymentRequest);
         PaymentResponse response = gatewayService.processPayment(renRequest);
+        Transaction transaction = new Transaction();
+        transaction.setTransactionReference(paymentRequest.getTransactionReference());
+        transaction.setAmount(paymentRequest.getAmount());
+        transaction.setCurrency(paymentRequest.getCurrency());
+        transaction.setPaymentMethod(paymentRequest.getPaymentMethod());
+        transaction.setCustomerId(paymentRequest.getCustomerId());
+        transaction.setStatus(response.getStatus());
+        transaction.setResponseCode(response.getResponseCode());
+        transaction.setResponseMessage(response.getResponseMessage());
+        transactionRepository.save(transaction);
+
         if ("APPROVED".equals(response.getStatus())) {
             return ResponseEntity.ok(response);
         } else {
