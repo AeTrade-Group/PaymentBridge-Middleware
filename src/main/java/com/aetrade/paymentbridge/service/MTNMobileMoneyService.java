@@ -6,13 +6,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aetrade.paymentbridge.model.PaymentRequest;
 import com.aetrade.paymentbridge.model.PaymentResponse;
+import com.aetrade.paymentbridge.model.Transaction;
+import com.aetrade.paymentbridge.repository.TransactionRepository;
 
 @Service
 public class MTNMobileMoneyService implements GatewayService {
+
+	@Autowired
+	private TransactionRepository transactionRepository;
 
 	@Override
 	public PaymentResponse processPayment(Map<String, Object> renRequest) {
@@ -27,26 +33,26 @@ public class MTNMobileMoneyService implements GatewayService {
 		Map<String, Object> authstnRslt = (Map<String, Object>) txRspn.get("AuthstnRslt");
 		Map<String, Object> rspnToAuthstn = (Map<String, Object>) authstnRslt.get("RspnToAuthstn");
 
-        String responseCode = (String) rspnToAuthstn.get("Rspn");
-        String responseMessage = (String) rspnToAuthstn.get("RspnRsn");
+		String responseCode = (String) rspnToAuthstn.get("Rspn");
+		String responseMessage = (String) rspnToAuthstn.get("RspnRsn");
 
-        if ("APPR".equals(responseCode)) {
-            response.setStatus("APPROVED");
-            response.setResponseCode("200");
-            response.setResponseMessage("MTN Mobile Money transaction successful");
-        } else {
-            response.setStatus("DECLINED");
-            response.setResponseCode("400");
-            response.setResponseMessage(
-                    responseMessage != null ? responseMessage : "MTN Mobile Money transaction failed");
-        }
+		if ("APPR".equals(responseCode)) {
+			response.setStatus("APPROVED");
+			response.setResponseCode("200");
+			response.setResponseMessage("MTN Mobile Money transaction successful");
+		} else {
+			response.setStatus("DECLINED");
+			response.setResponseCode("400");
+			response.setResponseMessage(
+					responseMessage != null ? responseMessage : "MTN Mobile Money transaction failed");
+		}
 
-        // Additional fields for wallet transactions
-        if (txRspn.containsKey("Bal")) {
-            Map<String, Object> balance = (Map<String, Object>) txRspn.get("Bal");
-            response.setBalanceAmount(new BigDecimal((String) balance.get("Amt")));
-            response.setBalanceCurrency((String) balance.get("Ccy"));
-        }
+		// Additional fields for wallet transactions
+		if (txRspn.containsKey("Bal")) {
+			Map<String, Object> balance = (Map<String, Object>) txRspn.get("Bal");
+			response.setBalanceAmount(new BigDecimal((String) balance.get("Amt")));
+			response.setBalanceCurrency((String) balance.get("Ccy"));
+		}
 
 		return response;
 	}
@@ -120,5 +126,19 @@ public class MTNMobileMoneyService implements GatewayService {
 		renRequest.put("Document", document);
 
 		return renRequest;
+	}
+
+	@Override
+	public void saveTransaction(PaymentRequest paymentRequest, PaymentResponse paymentResponse) {
+		Transaction transaction = new Transaction();
+		transaction.setTransactionReference(paymentRequest.getTransactionReference());
+		transaction.setAmount(paymentRequest.getAmount());
+		transaction.setCurrency(paymentRequest.getCurrency());
+		transaction.setPaymentMethod(paymentRequest.getPaymentMethod());
+		transaction.setCustomerId(paymentRequest.getCustomerId());
+		transaction.setStatus(paymentResponse.getStatus());
+		transaction.setResponseCode(paymentResponse.getResponseCode());
+		transaction.setResponseMessage(paymentResponse.getResponseMessage());
+		transactionRepository.save(transaction);
 	}
 }
