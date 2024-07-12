@@ -9,4 +9,5 @@ public interface GatewayService {
     PaymentResponse processPayment(Map<String, Object> renRequest);
     void processCallback(PaymentResponse response);
     Map<String, Object> transformToRENFormat(PaymentRequest paymentRequest);
+    void saveTransaction(PaymentRequest paymentRequest, PaymentResponse paymentResponse);
 }
