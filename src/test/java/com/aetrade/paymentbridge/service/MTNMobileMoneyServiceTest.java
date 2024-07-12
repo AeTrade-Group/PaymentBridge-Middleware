@@ -2,12 +2,13 @@ package com.aetrade.paymentbridge.service;
 
 import com.aetrade.paymentbridge.model.PaymentRequest;
 import com.aetrade.paymentbridge.model.PaymentResponse;
+import com.aetrade.paymentbridge.model.Transaction;
+import com.aetrade.paymentbridge.repository.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -15,12 +16,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class MTNMobileMoneyServiceTest {
 
     @Mock
-    private RestTemplate restTemplate;
+    private TransactionRepository transactionRepository;
 
     @InjectMocks
     private MTNMobileMoneyService mtnMobileMoneyService;
@@ -36,7 +37,6 @@ public class MTNMobileMoneyServiceTest {
         Map<String, Object> renResponse = new HashMap<>();
         Map<String, Object> document = new HashMap<>();
         Map<String, Object> accptrAuthstnRspn = new HashMap<>();
-        Map<String, Object> hdr = new HashMap<>();
         Map<String, Object> authstnRspn = new HashMap<>();
         Map<String, Object> txRspn = new HashMap<>();
         Map<String, Object> authstnRslt = new HashMap<>();
@@ -53,8 +53,6 @@ public class MTNMobileMoneyServiceTest {
         accptrAuthstnRspn.put("AuthstnRspn", authstnRspn);
         document.put("AccptrAuthstnRspn", accptrAuthstnRspn);
         renResponse.put("Document", document);
-
-        when(restTemplate.postForObject(any(String.class), any(Map.class), any(Class.class))).thenReturn(renResponse);
 
         // Create a valid CS-Cart request
         PaymentRequest paymentRequest = new PaymentRequest();
@@ -90,7 +88,6 @@ public class MTNMobileMoneyServiceTest {
         Map<String, Object> renResponse = new HashMap<>();
         Map<String, Object> document = new HashMap<>();
         Map<String, Object> accptrAuthstnRspn = new HashMap<>();
-        Map<String, Object> hdr = new HashMap<>();
         Map<String, Object> authstnRspn = new HashMap<>();
         Map<String, Object> txRspn = new HashMap<>();
         Map<String, Object> authstnRslt = new HashMap<>();
@@ -104,8 +101,6 @@ public class MTNMobileMoneyServiceTest {
         accptrAuthstnRspn.put("AuthstnRspn", authstnRspn);
         document.put("AccptrAuthstnRspn", accptrAuthstnRspn);
         renResponse.put("Document", document);
-
-        when(restTemplate.postForObject(any(String.class), any(Map.class), any(Class.class))).thenReturn(renResponse);
 
         // Create a valid CS-Cart request
         PaymentRequest paymentRequest = new PaymentRequest();
@@ -131,5 +126,27 @@ public class MTNMobileMoneyServiceTest {
         assertEquals("DECLINED", response.getStatus());
         assertEquals("400", response.getResponseCode());
         assertEquals("Insufficient Fund", response.getResponseMessage());
+    }
+
+    @Test
+    public void testSaveTransaction() {
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setAmount(new BigDecimal("500"));
+        paymentRequest.setCurrency("943");
+        paymentRequest.setPaymentMethod("MTN Mobile Money");
+        paymentRequest.setTransactionReference("0123456312");
+        paymentRequest.setCallbackUrl("http://callback.url");
+        paymentRequest.setCustomerId("customer123");
+        paymentRequest.setOrderId("order123");
+        paymentRequest.setUserId("user123");
+
+        PaymentResponse paymentResponse = new PaymentResponse();
+        paymentResponse.setStatus("APPROVED");
+        paymentResponse.setResponseCode("200");
+        paymentResponse.setResponseMessage("MTN Mobile Money transaction successful");
+
+        mtnMobileMoneyService.saveTransaction(paymentRequest, paymentResponse);
+
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
 }
