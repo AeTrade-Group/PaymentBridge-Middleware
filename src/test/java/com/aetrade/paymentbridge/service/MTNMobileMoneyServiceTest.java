@@ -37,6 +37,8 @@ public class MTNMobileMoneyServiceTest {
         Map<String, Object> renResponse = new HashMap<>();
         Map<String, Object> document = new HashMap<>();
         Map<String, Object> accptrAuthstnRspn = new HashMap<>();
+        Map<String, Object> hdr = new HashMap<>();
+        Map<String, Object> hdr = new HashMap<>();
         Map<String, Object> authstnRspn = new HashMap<>();
         Map<String, Object> txRspn = new HashMap<>();
         Map<String, Object> authstnRslt = new HashMap<>();
@@ -49,6 +51,10 @@ public class MTNMobileMoneyServiceTest {
         balance.put("Ccy", "943");
         txRspn.put("AuthstnRslt", authstnRslt);
         txRspn.put("Bal", balance);
+        hdr.put("MsgFctn", "AUTQ");
+        accptrAuthstnRspn.put("Hdr", hdr);
+        hdr.put("MsgFctn", "AUTQ");
+        accptrAuthstnRspn.put("Hdr", hdr);
         authstnRspn.put("TxRspn", txRspn);
         accptrAuthstnRspn.put("AuthstnRspn", authstnRspn);
         document.put("AccptrAuthstnRspn", accptrAuthstnRspn);
