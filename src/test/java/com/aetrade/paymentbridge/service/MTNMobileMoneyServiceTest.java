@@ -38,7 +38,6 @@ public class MTNMobileMoneyServiceTest {
         Map<String, Object> document = new HashMap<>();
         Map<String, Object> accptrAuthstnRspn = new HashMap<>();
         Map<String, Object> hdr = new HashMap<>();
-        Map<String, Object> hdr = new HashMap<>();
         Map<String, Object> authstnRspn = new HashMap<>();
         Map<String, Object> txRspn = new HashMap<>();
         Map<String, Object> authstnRslt = new HashMap<>();
