@@ -26,12 +26,39 @@ public class MTNMobileMoneyService implements GatewayService {
 		PaymentResponse response = new PaymentResponse();
 		// Extract necessary fields from the REN response
 		Map<String, Object> document = (Map<String, Object>) renRequest.get("Document");
+		if (document == null) {
+			throw new IllegalArgumentException("Invalid REN request: Document is missing");
+		}
+
 		Map<String, Object> accptrAuthstnRspn = (Map<String, Object>) document.get("AccptrAuthstnRspn");
+		if (accptrAuthstnRspn == null) {
+			throw new IllegalArgumentException("Invalid REN request: AccptrAuthstnRspn is missing");
+		}
+
 		Map<String, Object> hdr = (Map<String, Object>) accptrAuthstnRspn.get("Hdr");
+		if (hdr == null) {
+			throw new IllegalArgumentException("Invalid REN request: Hdr is missing");
+		}
+
 		Map<String, Object> authstnRspn = (Map<String, Object>) accptrAuthstnRspn.get("AuthstnRspn");
+		if (authstnRspn == null) {
+			throw new IllegalArgumentException("Invalid REN request: AuthstnRspn is missing");
+		}
+
 		Map<String, Object> txRspn = (Map<String, Object>) authstnRspn.get("TxRspn");
+		if (txRspn == null) {
+			throw new IllegalArgumentException("Invalid REN request: TxRspn is missing");
+		}
+
 		Map<String, Object> authstnRslt = (Map<String, Object>) txRspn.get("AuthstnRslt");
+		if (authstnRslt == null) {
+			throw new IllegalArgumentException("Invalid REN request: AuthstnRslt is missing");
+		}
+
 		Map<String, Object> rspnToAuthstn = (Map<String, Object>) authstnRslt.get("RspnToAuthstn");
+		if (rspnToAuthstn == null) {
+			throw new IllegalArgumentException("Invalid REN request: RspnToAuthstn is missing");
+		}
 
 		String responseCode = (String) rspnToAuthstn.get("Rspn");
 		String responseMessage = (String) rspnToAuthstn.get("RspnRsn");
