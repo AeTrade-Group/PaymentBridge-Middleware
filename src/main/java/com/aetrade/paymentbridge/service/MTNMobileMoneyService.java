@@ -24,29 +24,30 @@ public class MTNMobileMoneyService implements GatewayService {
 	public PaymentResponse processPayment(Map<String, Object> renRequest) {
 		// Implementation specific to MTN Mobile Money
 		PaymentResponse response = new PaymentResponse();
-		// Validate and extract necessary fields from the REN response
-		Map<String, Object> rspnToAuthstn = validateRENResponse(renRequest);
+        // Validate and extract necessary fields from the REN response
+        Map<String, Object> rspnToAuthstn = validateRENResponse(renRequest);
+        Map<String, Object> txRspn = (Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) renRequest.get("Document")).get("AccptrAuthstnRspn")).get("AuthstnRspn");
 
-		String responseCode = (String) rspnToAuthstn.get("Rspn");
-		String responseMessage = (String) rspnToAuthstn.get("RspnRsn");
+        String responseCode = (String) rspnToAuthstn.get("Rspn");
+        String responseMessage = (String) rspnToAuthstn.get("RspnRsn");
 
-		if ("APPR".equals(responseCode)) {
-			response.setStatus("APPROVED");
-			response.setResponseCode("200");
-			response.setResponseMessage("MTN Mobile Money transaction successful");
-		} else {
-			response.setStatus("DECLINED");
-			response.setResponseCode("400");
-			response.setResponseMessage(
-					responseMessage != null ? responseMessage : "MTN Mobile Money transaction failed");
-		}
+        if ("APPR".equals(responseCode)) {
+            response.setStatus("APPROVED");
+            response.setResponseCode("200");
+            response.setResponseMessage("MTN Mobile Money transaction successful");
+        } else {
+            response.setStatus("DECLINED");
+            response.setResponseCode("400");
+            response.setResponseMessage(
+                    responseMessage != null ? responseMessage : "MTN Mobile Money transaction failed");
+        }
 
-		// Additional fields for wallet transactions
-		if (txRspn.containsKey("Bal")) {
-			Map<String, Object> balance = (Map<String, Object>) txRspn.get("Bal");
-			response.setBalanceAmount(new BigDecimal((String) balance.get("Amt")));
-			response.setBalanceCurrency((String) balance.get("Ccy"));
-		}
+        // Additional fields for wallet transactions
+        if (txRspn.containsKey("Bal")) {
+            Map<String, Object> balance = (Map<String, Object>) txRspn.get("Bal");
+            response.setBalanceAmount(new BigDecimal((String) balance.get("Amt")));
+            response.setBalanceCurrency((String) balance.get("Ccy"));
+        }
 
 		return response;
 	}
