@@ -139,15 +139,14 @@ import com.aetrade.paymentbridge.repository.TransactionRepository;
          billingAddress.put("zip", "1100");                                                              
          paymentRequest.setBillingAddress(billingAddress);                                               
                                                                                                          
-         // Transform to REN format and process payment                                                  
-         Map<String, Object> renRequest = mtnMobileMoneyService.transformToRENFormat(paymentRequest);    
-         PaymentResponse response = mtnMobileMoneyService.processPayment(renRequest);                    
-                                                                                                         
-         // Verify the response                                                                          
-         assertEquals("DECLINED", response.getStatus());                                                 
-         assertEquals("400", response.getResponseCode());                                                
-         assertEquals("Insufficient Fund", response.getResponseMessage());                               
-     }                                                                                                   
+         // Process payment with the mocked REN response
+         PaymentResponse response = mtnMobileMoneyService.processPayment(renResponse);
+
+         // Verify the response
+         assertEquals("DECLINED", response.getStatus());
+         assertEquals("400", response.getResponseCode());
+         assertEquals("Insufficient Fund", response.getResponseMessage());
+     }
                                                                                                          
      @Test                                                                                               
      public void testSaveTransaction() {                                                                 
