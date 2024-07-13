@@ -32,9 +32,21 @@ public class MTNMobileMoneyService implements GatewayService {
 		}
 		Map<String, Object> hdr = (Map<String, Object>) accptrAuthstnRspn.get("Hdr");
 		Map<String, Object> authstnRspn = (Map<String, Object>) accptrAuthstnRspn.get("AuthstnRspn");
+		if (authstnRspn == null) {
+			throw new IllegalArgumentException("Invalid REN response: AuthstnRspn is missing");
+		}
 		Map<String, Object> txRspn = (Map<String, Object>) authstnRspn.get("TxRspn");
+		if (txRspn == null) {
+			throw new IllegalArgumentException("Invalid REN response: TxRspn is missing");
+		}
 		Map<String, Object> authstnRslt = (Map<String, Object>) txRspn.get("AuthstnRslt");
+		if (authstnRslt == null) {
+			throw new IllegalArgumentException("Invalid REN response: AuthstnRslt is missing");
+		}
 		Map<String, Object> rspnToAuthstn = (Map<String, Object>) authstnRslt.get("RspnToAuthstn");
+		if (rspnToAuthstn == null) {
+			throw new IllegalArgumentException("Invalid REN response: RspnToAuthstn is missing");
+		}
 
 		String responseCode = (String) rspnToAuthstn.get("Rspn");
 		String responseMessage = (String) rspnToAuthstn.get("RspnRsn");
