@@ -301,8 +301,15 @@ public class MTNMobileMoneyServiceTest {
         Map<String, Object> renRequest = mtnMobileMoneyService.transformToRENFormat(paymentRequest);
 
         // Verify the REN request structure
-        assertEquals("AUTQ", ((Map<String, Object>) ((Map<String, Object>) renRequest.get("Document")).get("AccptrAuthstnReq")).get("Hdr").get("MsgFctn"));
-        assertEquals("943", ((Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) renRequest.get("Document")).get("AccptrAuthstnReq")).get("AuthstnReq")).get("Tx")).get("TxDtls")).get("Ccy"));
+        Map<String, Object> document = (Map<String, Object>) renRequest.get("Document");
+        Map<String, Object> accptrAuthstnReq = (Map<String, Object>) document.get("AccptrAuthstnReq");
+        Map<String, Object> hdr = (Map<String, Object>) accptrAuthstnReq.get("Hdr");
+        Map<String, Object> authstnReq = (Map<String, Object>) accptrAuthstnReq.get("AuthstnReq");
+        Map<String, Object> tx = (Map<String, Object>) authstnReq.get("Tx");
+        Map<String, Object> txDtls = (Map<String, Object>) tx.get("TxDtls");
+
+        assertEquals("AUTQ", hdr.get("MsgFctn"));
+        assertEquals("943", txDtls.get("Ccy"));
     }
 
     @Test
