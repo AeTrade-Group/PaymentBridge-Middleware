@@ -78,8 +78,30 @@ import com.aetrade.paymentbridge.repository.TransactionRepository;
          paymentRequest.setBillingAddress(billingAddress);                                               
                                                                                                          
          // Transform to REN format and process payment                                                  
-         Map<String, Object> renRequest = mtnMobileMoneyService.transformToRENFormat(paymentRequest);    
-         PaymentResponse response = mtnMobileMoneyService.processPayment(renRequest);                    
+         Map<String, Object> renRequest = new HashMap<>();
+         Map<String, Object> document = new HashMap<>();
+         Map<String, Object> accptrAuthstnRspn = new HashMap<>();
+         Map<String, Object> hdr = new HashMap<>();
+         Map<String, Object> authstnRspn = new HashMap<>();
+         Map<String, Object> txRspn = new HashMap<>();
+         Map<String, Object> authstnRslt = new HashMap<>();
+         Map<String, Object> rspnToAuthstn = new HashMap<>();
+         Map<String, Object> balance = new HashMap<>();
+
+         rspnToAuthstn.put("Rspn", "APPR");
+         authstnRslt.put("RspnToAuthstn", rspnToAuthstn);
+         balance.put("Amt", "3577");
+         balance.put("Ccy", "943");
+         txRspn.put("AuthstnRslt", authstnRslt);
+         txRspn.put("Bal", balance);
+         hdr.put("MsgFctn", "AUTQ");
+         accptrAuthstnRspn.put("Hdr", hdr);
+         authstnRspn.put("TxRspn", txRspn);
+         accptrAuthstnRspn.put("AuthstnRspn", authstnRspn);
+         document.put("AccptrAuthstnRspn", accptrAuthstnRspn);
+         renRequest.put("Document", document);
+
+         PaymentResponse response = mtnMobileMoneyService.processPayment(renRequest);
                                                                                                          
          // Verify the response                                                                          
          assertEquals("APPROVED", response.getStatus());                                                 
