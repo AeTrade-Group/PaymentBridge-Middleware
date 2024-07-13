@@ -79,14 +79,6 @@ import com.aetrade.paymentbridge.repository.TransactionRepository;
                                                                                                          
          // Transform to REN format and process payment                                                  
          Map<String, Object> renRequest = new HashMap<>();
-         Map<String, Object> document = new HashMap<>();
-         Map<String, Object> accptrAuthstnRspn = new HashMap<>();
-         Map<String, Object> hdr = new HashMap<>();
-         Map<String, Object> authstnRspn = new HashMap<>();
-         Map<String, Object> txRspn = new HashMap<>();
-         Map<String, Object> authstnRslt = new HashMap<>();
-         Map<String, Object> rspnToAuthstn = new HashMap<>();
-         Map<String, Object> balance = new HashMap<>();
 
          rspnToAuthstn.put("Rspn", "APPR");
          authstnRslt.put("RspnToAuthstn", rspnToAuthstn);
