@@ -52,56 +52,39 @@ import com.aetrade.paymentbridge.repository.TransactionRepository;
          balance.put("Ccy", "943");                                                                      
          txRspn.put("AuthstnRslt", authstnRslt);                                                         
          txRspn.put("Bal", balance);                                                                     
-         hdr.put("MsgFctn", "AUTQ");                                                                     
-         accptrAuthstnRspn.put("Hdr", hdr);                                                              
-         hdr.put("MsgFctn", "AUTQ");                                                                     
-         accptrAuthstnRspn.put("Hdr", hdr);                                                              
-         authstnRspn.put("TxRspn", txRspn);                                                              
-         accptrAuthstnRspn.put("AuthstnRspn", authstnRspn);                                              
-         document.put("AccptrAuthstnRspn", accptrAuthstnRspn);                                           
-         renResponse.put("Document", document);                                                          
-                                                                                                         
-         // Create a valid CS-Cart request                                                               
-         PaymentRequest paymentRequest = new PaymentRequest();                                           
-         paymentRequest.setAmount(new BigDecimal("500"));                                                
-         paymentRequest.setCurrency("943");                                                              
-         paymentRequest.setPaymentMethod("MTN Mobile Money");                                            
-         paymentRequest.setTransactionReference("0123456312");                                           
-         paymentRequest.setCallbackUrl("http://callback.url");                                           
-         paymentRequest.setCustomerId("customer123");                                                    
-         paymentRequest.setOrderId("order123");                                                          
-         paymentRequest.setUserId("user123");                                                            
-         Map<String, String> billingAddress = new HashMap<>();                                           
-         billingAddress.put("city", "Maputo");                                                           
-         billingAddress.put("country", "MZ");                                                            
-         billingAddress.put("zip", "1100");                                                              
-         paymentRequest.setBillingAddress(billingAddress);                                               
-                                                                                                         
-         // Transform to REN format and process payment                                                  
-         Map<String, Object> renRequest = new HashMap<>();
-
-         rspnToAuthstn.put("Rspn", "APPR");
-         authstnRslt.put("RspnToAuthstn", rspnToAuthstn);
-         balance.put("Amt", "3577");
-         balance.put("Ccy", "943");
-         txRspn.put("AuthstnRslt", authstnRslt);
-         txRspn.put("Bal", balance);
          hdr.put("MsgFctn", "AUTQ");
          accptrAuthstnRspn.put("Hdr", hdr);
          authstnRspn.put("TxRspn", txRspn);
          accptrAuthstnRspn.put("AuthstnRspn", authstnRspn);
          document.put("AccptrAuthstnRspn", accptrAuthstnRspn);
-         renRequest.put("Document", document);
+         renResponse.put("Document", document);
 
-         PaymentResponse response = mtnMobileMoneyService.processPayment(renRequest);
-                                                                                                         
-         // Verify the response                                                                          
-         assertEquals("APPROVED", response.getStatus());                                                 
-         assertEquals("200", response.getResponseCode());                                                
-         assertEquals("MTN Mobile Money transaction successful", response.getResponseMessage());         
-         assertEquals(new BigDecimal("3577"), response.getBalanceAmount());                              
-         assertEquals("943", response.getBalanceCurrency());                                             
-     }                                                                                                   
+         // Create a valid CS-Cart request
+         PaymentRequest paymentRequest = new PaymentRequest();
+         paymentRequest.setAmount(new BigDecimal("500"));
+         paymentRequest.setCurrency("943");
+         paymentRequest.setPaymentMethod("MTN Mobile Money");
+         paymentRequest.setTransactionReference("0123456312");
+         paymentRequest.setCallbackUrl("http://callback.url");
+         paymentRequest.setCustomerId("customer123");
+         paymentRequest.setOrderId("order123");
+         paymentRequest.setUserId("user123");
+         Map<String, String> billingAddress = new HashMap<>();
+         billingAddress.put("city", "Maputo");
+         billingAddress.put("country", "MZ");
+         billingAddress.put("zip", "1100");
+         paymentRequest.setBillingAddress(billingAddress);
+
+         // Process payment with the mocked REN response
+         PaymentResponse response = mtnMobileMoneyService.processPayment(renResponse);
+
+         // Verify the response
+         assertEquals("APPROVED", response.getStatus());
+         assertEquals("200", response.getResponseCode());
+         assertEquals("MTN Mobile Money transaction successful", response.getResponseMessage());
+         assertEquals(new BigDecimal("3577"), response.getBalanceAmount());
+         assertEquals("943", response.getBalanceCurrency());
+     }
                                                                                                          
      @Test                                                                                               
      public void testProcessPayment_Failure() {                                                          
