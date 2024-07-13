@@ -24,29 +24,8 @@ public class MTNMobileMoneyService implements GatewayService {
 	public PaymentResponse processPayment(Map<String, Object> renRequest) {
 		// Implementation specific to MTN Mobile Money
 		PaymentResponse response = new PaymentResponse();
-		// Extract necessary fields from the REN response
-		Map<String, Object> document = (Map<String, Object>) renRequest.get("Document");
-		Map<String, Object> accptrAuthstnRspn = (Map<String, Object>) document.get("AccptrAuthstnRspn");
-		if (accptrAuthstnRspn == null) {
-			throw new IllegalArgumentException("Invalid REN response: AccptrAuthstnRspn is missing");
-		}
-		Map<String, Object> hdr = (Map<String, Object>) accptrAuthstnRspn.get("Hdr");
-		Map<String, Object> authstnRspn = (Map<String, Object>) accptrAuthstnRspn.get("AuthstnRspn");
-		if (authstnRspn == null) {
-			throw new IllegalArgumentException("Invalid REN response: AuthstnRspn is missing");
-		}
-		Map<String, Object> txRspn = (Map<String, Object>) authstnRspn.get("TxRspn");
-		if (txRspn == null) {
-			throw new IllegalArgumentException("Invalid REN response: TxRspn is missing");
-		}
-		Map<String, Object> authstnRslt = (Map<String, Object>) txRspn.get("AuthstnRslt");
-		if (authstnRslt == null) {
-			throw new IllegalArgumentException("Invalid REN response: AuthstnRslt is missing");
-		}
-		Map<String, Object> rspnToAuthstn = (Map<String, Object>) authstnRslt.get("RspnToAuthstn");
-		if (rspnToAuthstn == null) {
-			throw new IllegalArgumentException("Invalid REN response: RspnToAuthstn is missing");
-		}
+		// Validate and extract necessary fields from the REN response
+		Map<String, Object> rspnToAuthstn = validateRENResponse(renRequest);
 
 		String responseCode = (String) rspnToAuthstn.get("Rspn");
 		String responseMessage = (String) rspnToAuthstn.get("RspnRsn");
@@ -155,5 +134,29 @@ public class MTNMobileMoneyService implements GatewayService {
 		transaction.setResponseCode(paymentResponse.getResponseCode());
 		transaction.setResponseMessage(paymentResponse.getResponseMessage());
 		transactionRepository.save(transaction);
+	}
+	private Map<String, Object> validateRENResponse(Map<String, Object> renRequest) {
+		Map<String, Object> document = (Map<String, Object>) renRequest.get("Document");
+		Map<String, Object> accptrAuthstnRspn = (Map<String, Object>) document.get("AccptrAuthstnRspn");
+		if (accptrAuthstnRspn == null) {
+			throw new IllegalArgumentException("Invalid REN response: AccptrAuthstnRspn is missing");
+		}
+		Map<String, Object> authstnRspn = (Map<String, Object>) accptrAuthstnRspn.get("AuthstnRspn");
+		if (authstnRspn == null) {
+			throw new IllegalArgumentException("Invalid REN response: AuthstnRspn is missing");
+		}
+		Map<String, Object> txRspn = (Map<String, Object>) authstnRspn.get("TxRspn");
+		if (txRspn == null) {
+			throw new IllegalArgumentException("Invalid REN response: TxRspn is missing");
+		}
+		Map<String, Object> authstnRslt = (Map<String, Object>) txRspn.get("AuthstnRslt");
+		if (authstnRslt == null) {
+			throw new IllegalArgumentException("Invalid REN response: AuthstnRslt is missing");
+		}
+		Map<String, Object> rspnToAuthstn = (Map<String, Object>) authstnRslt.get("RspnToAuthstn");
+		if (rspnToAuthstn == null) {
+			throw new IllegalArgumentException("Invalid REN response: RspnToAuthstn is missing");
+		}
+		return rspnToAuthstn;
 	}
 }
